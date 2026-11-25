@@ -3,6 +3,8 @@
 > 织造：把 codex / dsh / claude 这些各自独立的 agent 拧成一条产线。
 > 你说一句话，它拆活、派活、验收、交接，并且每个 agent 在自己客户端里都留下真实会话。
 
+仓库：<https://github.com/Tron-y/Loom>
+
 调度者是一个 agent，叫 **Trony harness**（跑在 DSH 模型上，自己不写代码，只负责拆活/派活/验收/交接）。
 
 ## 一句话怎么用
