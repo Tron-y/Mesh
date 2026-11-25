@@ -1,0 +1,7 @@
+{
+  "goal": "真 Codex 跑一个小改动（验证 adapter 与闸门）",
+  "planner": "rule",
+  "tasks": [
+    { "id": "T1", "role": "demo-codex", "title": "codex 写 hello.txt", "brief": "在 src/web/hello.txt 写一行 hello from codex", "depends": [], "writes": ["src/web/**"], "gate": true }
+  ]
+}

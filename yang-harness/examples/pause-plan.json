@@ -1,0 +1,7 @@
+{
+  "goal": "演示：暂停正在运行的 agent",
+  "planner": "rule",
+  "tasks": [
+    { "id": "T1", "role": "demo-slow", "title": "跑 25 秒的慢任务", "brief": "慢慢跑", "depends": [], "writes": [], "gate": true }
+  ]
+}

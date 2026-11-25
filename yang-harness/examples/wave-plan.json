@@ -1,0 +1,10 @@
+{
+  "goal": "验证待派任务也显示真实 agent 名",
+  "planner": "rule",
+  "models": { "dsh": "deepseek-flash" },
+  "tasks": [
+    { "id": "T0", "role": "backend", "title": "契约冻结", "brief": "只产出 CONTRACT/openapi.yaml", "depends": [], "writes": ["CONTRACT/**"], "gate": false },
+    { "id": "T1", "role": "backend", "title": "后端实现", "brief": "写 server.js", "depends": ["T0"], "writes": ["server.js"], "gate": true },
+    { "id": "T2", "role": "frontend", "title": "前端实现", "brief": "写 public/index.html 与 public/app.js", "depends": ["T0"], "writes": ["public/**"], "gate": true }
+  ]
+}

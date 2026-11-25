@@ -1,0 +1,24 @@
+{
+  "goal": "演示：派发 → 交接注入 → 闸门",
+  "planner": "rule",
+  "tasks": [
+    {
+      "id": "T1",
+      "role": "demo",
+      "title": "第一步（模拟后端）",
+      "brief": "产出 CONTRACT/openapi.yaml",
+      "depends": [],
+      "writes": ["CONTRACT/**"],
+      "gate": true
+    },
+    {
+      "id": "T2",
+      "role": "demo",
+      "title": "第二步（模拟前端，应看到上游交接）",
+      "brief": "按 CONTRACT/openapi.yaml 实现界面",
+      "depends": ["T1"],
+      "writes": ["src/web/**"],
+      "gate": true
+    }
+  ]
+}

@@ -1,0 +1,64 @@
+{
+  "goal": "做一个小页面：后端用 dsh 写 hello 接口，前端用 codex 写页面",
+  "planner": "rule",
+  "tasks": [
+    {
+      "id": "T0",
+      "role": "backend",
+      "title": "契约冻结（只出接口定义）",
+      "brief": "只产出 CONTRACT/openapi.yaml 与 CONTRACT/types.ts，不写实现。接口要覆盖需求里所有实体与动作，字段命名与错误结构定死。",
+      "depends": [],
+      "writes": [
+        "CONTRACT/**"
+      ],
+      "gate": false,
+      "agent": "backend-dsh"
+    },
+    {
+      "id": "T1",
+      "role": "backend",
+      "title": "后端实现",
+      "brief": "按 CONTRACT/** 实现后端与数据层：做一个小页面：后端用 dsh 写 hello 接口，前端用 codex 写页面",
+      "depends": [
+        "T0"
+      ],
+      "writes": [
+        "src/api/**",
+        "server/**"
+      ],
+      "gate": true,
+      "agent": "backend-dsh"
+    },
+    {
+      "id": "T2",
+      "role": "frontend",
+      "title": "前端实现（按契约，可用 mock 并行）",
+      "brief": "按 CONTRACT/openapi.yaml 与 CONTRACT/types.ts 实现界面；接口未就绪用 mock，字段与契约一致。",
+      "depends": [
+        "T0"
+      ],
+      "writes": [
+        "src/web/**",
+        "public/**"
+      ],
+      "gate": true,
+      "agent": "frontend-codex"
+    },
+    {
+      "id": "T3",
+      "role": "qa",
+      "title": "联调 + 验收",
+      "brief": "起服务、跑 e2e、逐条核对契约与实现一致；失败要归因到后端/前端/契约。",
+      "depends": [
+        "T1",
+        "T2"
+      ],
+      "writes": [
+        "e2e/**",
+        "REPORT.md"
+      ],
+      "gate": true,
+      "agent": "qa-dsh"
+    }
+  ]
+}

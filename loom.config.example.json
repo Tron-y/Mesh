@@ -1,0 +1,21 @@
+{
+  "_说明": "复制成 loom.config.json 再改。留空 = 自动探测；也可以用环境变量 LOOM_DSH_BIN / LOOM_CODEX_BIN / LOOM_CLAUDE_BIN 覆盖。改完跑 node yang-harness/yang.mjs doctor 确认。",
+  "bins": {
+    "dsh": "",
+    "codex": "",
+    "claude": "",
+    "cursor": "",
+    "opencode": "",
+    "gemini": ""
+  },
+  "dsh": {
+    "_root": "DeepSeek Harness 桌面端的安装目录（里面有 DeepSeek Harness.exe）",
+    "root": "",
+    "model": ""
+  },
+  "defaults": {
+    "planner": "deepseek-flash",
+    "parallel": 3,
+    "worktree": false
+  }
+}

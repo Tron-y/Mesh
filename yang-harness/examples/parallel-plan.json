@@ -1,0 +1,32 @@
+{
+  "goal": "演示：契约 → 后端∥前端并行 → 合并",
+  "planner": "rule",
+  "tasks": [
+    {
+      "id": "T0",
+      "role": "demo-contract", "title": "契约冻结",
+      "brief": "只写 CONTRACT/openapi.yaml",
+      "depends": [],
+      "writes": ["CONTRACT/**"],
+      "gate": false
+    },
+    {
+      "id": "T1",
+      "role": "demo-be",
+      "title": "后端实现（与 T2 并行）",
+      "brief": "写 src/api/user.js",
+      "depends": ["T0"],
+      "writes": ["src/api/**"],
+      "gate": true
+    },
+    {
+      "id": "T2",
+      "role": "demo-fe",
+      "title": "前端实现（与 T1 并行）",
+      "brief": "写 src/web/page.html",
+      "depends": ["T0"],
+      "writes": ["src/web/**"],
+      "gate": true
+    }
+  ]
+}

@@ -1,0 +1,9 @@
+{
+  "goal": "边跑边看图（两波并行 + 慢任务）",
+  "planner": "rule",
+  "tasks": [
+    { "id": "T0", "role": "demo-be", "title": "契约与后端", "brief": "x", "depends": [], "writes": [], "gate": true },
+    { "id": "T1", "role": "demo-slow", "title": "慢任务 A", "brief": "x", "depends": ["T0"], "writes": [], "gate": true },
+    { "id": "T2", "role": "demo-slow", "title": "慢任务 B", "brief": "x", "depends": ["T0"], "writes": [], "gate": true }
+  ]
+}

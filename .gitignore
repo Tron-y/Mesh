@@ -1,0 +1,10 @@
+# 每台机器自己的 agent 安装路径，不要提交
+loom.config.json
+
+# 跑出来的东西
+runs/
+node_modules/
+
+# 备份文件（我们改别人配置前留的 .yang-bak 之类，都在用户目录，不会进这里；保险起见）
+*.yang-bak
+*.yangtmp

@@ -1,0 +1,8 @@
+{
+  "goal": "模型指定测试：后端 flash，前端 gpt-6.1-sol",
+  "planner": "rule",
+  "models": { "dsh": "deepseek-flash" },
+  "tasks": [
+    { "id": "T1", "role": "backend-dsh", "title": "后端探针（flash）", "brief": "写 server.js：Node 原生 http，GET /api/hello 返回 {\"msg\":\"hello from dsh\"}，监听 PORT||3000。", "depends": [], "writes": ["server.js"], "gate": true }
+  ]
+}

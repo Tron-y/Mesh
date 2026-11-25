@@ -1,0 +1,24 @@
+{
+  "goal": "shop-a：DSH 设计并实现后端 → 交接给 Codex 开发前端",
+  "planner": "rule",
+  "tasks": [
+    {
+      "id": "T1",
+      "role": "backend-dsh",
+      "title": "后端：接口与实现（DSH）",
+      "brief": "用 Node 原生 http 写 server.js，提供 GET /api/hello 返回 {\"msg\":\"hello from dsh\"}，监听 PORT||3000，路由表可扩展。",
+      "depends": [],
+      "writes": ["server.js", "src/**"],
+      "gate": true
+    },
+    {
+      "id": "T2",
+      "role": "frontend-codex",
+      "title": "前端：页面与联调（Codex）",
+      "brief": "写 public/index.html + public/app.js，按钮点击 fetch('/api/hello') 并把 msg 渲染出来，要有失败提示。原生 JS，无构建。",
+      "depends": ["T1"],
+      "writes": ["public/**"],
+      "gate": true
+    }
+  ]
+}

@@ -1,0 +1,42 @@
+# yang-harness 给 dsh headless 挂的路由补丁（不改你的 ~/.dsh 配置）
+# 用 --patch 临时叠加：dsh headless --patch <这个文件> "<prompt>"
+# key 走环境变量 XFTECH_API_KEY（yang 从 ~/.dsh/.credentials.yaml 读出来注入子进程）
+
+- id: llm-pi-ai
+  name: "@deepseek-ai/dsh-llm-pi-ai"
+  config:
+    providers:
+      xftech:
+        displayName: xftech
+        apiKeyEnv: XFTECH_API_KEY
+        api: openai-completions
+        baseURL: https://llmapi.xfcxb.com/v1
+        compat:
+          thinkingFormat: deepseek
+        defaultInput:
+          - text
+        models:
+          - id: deepseek-v4-pro
+            name: deepseek-v4-pro
+            input:
+              - text
+          - id: deepseek-flash
+            name: deepseek-flash
+            input:
+              - text
+
+- id: agent-default-model
+  name: "@deepseek-ai/dsh-agent-default-model"
+  config:
+    provider: xftech
+    model: deepseek-v4-pro
+
+# 无人值守预设：审批无人可答 → never；写入限制在 worktree 内
+- id: permission
+  config:
+    presets:
+      yang-auto:
+        sandbox: workspace-write
+        approval: never
+        description: yang 无人值守：工作区可写、不弹审批
+    defaultPreset: yang-auto

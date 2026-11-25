@@ -1,0 +1,9 @@
+{
+  "goal": "演示：两个工人改同一个文件 → 冲突被拦下",
+  "planner": "rule",
+  "tasks": [
+    { "id": "T0", "role": "demo-contract", "title": "契约冻结", "brief": "写 CONTRACT", "depends": [], "writes": ["CONTRACT/**"], "gate": false },
+    { "id": "T1", "role": "demo-be", "title": "A 改 src/api/user.js", "brief": "写 user.js", "depends": ["T0"], "writes": ["src/api/**"], "gate": true },
+    { "id": "T2", "role": "demo-fe2", "title": "B 也改 src/api/user.js", "brief": "写 user.js", "depends": ["T0"], "writes": ["src/api/**"], "gate": true }
+  ]
+}
