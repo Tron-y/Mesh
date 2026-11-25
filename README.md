@@ -5,6 +5,8 @@
 
 仓库：<https://github.com/Tron-y/Mesh>
 
+**先读这个：[为什么要有 Mesh](WHY.md)** —— 为什么做、解决什么、五个典型使用场景。
+
 调度者是一个 agent，叫 **Trony harness**（跑在 DSH 模型上，自己不写代码，只负责拆活/派活/验收/交接）。
 
 ## 一句话怎么用
