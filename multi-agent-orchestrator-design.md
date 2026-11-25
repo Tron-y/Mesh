@@ -790,3 +790,24 @@ msedge --headless=new --dump-dom "http://127.0.0.1:7788/?selftest=1"
 自检项从 5 条加到 6 条（多了「环境检查按钮在」），`?selftest=1` → PASS 6/6。
 
 顺带修的显示问题：「来源」列自动换行把"自动探测"拆成两行 → 加 `white-space:nowrap`。
+
+### 第十三轮：定名 Mesh（原名 Loom 废弃）
+
+用户否掉了两批名字：Loom / 织造（"有点捞"，太软、太手工）、以及后来的 Marshal / Foreman / Relay / Gantry / Sortie / Reins 那批（隐喻味太重）。
+
+第三批走**纯技术词汇**路线，用户选定 **Mesh**。
+
+为什么是 Mesh：
+- 业内本来就叫 agent mesh / service mesh —— 「多个 agent 互相发现、互相发消息」正是本项目在干的事，不是硬套比喻
+- 4 个字母，`mesh run` / `mesh doctor` / `mesh.config.json` 都顺
+- 不软：没有编织、指挥、牧羊那套
+
+改名清单（已执行）：
+- 界面：`<title>Mesh · 多 agent 编排器`、`<h1>Mesh`、副标题 `多 agent 编排器 · agent mesh`；workflow.html 同步
+- 配置：`loom.config.json` → `mesh.config.json`，模板 `mesh.config.example.json`
+- 环境变量前缀：`LOOM_*` → `MESH_*`（`MESH_DSH_BIN` / `MESH_CODEX_BIN` / `MESH_CLAUDE_BIN` / `MESH_DSH_HOME` / `MESH_CONFIG`）
+- `.gitignore` 与 `.git/info/exclude` 同步
+- README 标语从"织造/拧成一条产线"改成"把孤岛连成一张网"
+
+命名经验（记下来，省得再绕）：这个项目的名字不该从**工艺/军事**取材（Loom、Marshal 都被否），
+而应该从**自己所在的技术领域**取材 —— 名字本身就是它的工作原理。

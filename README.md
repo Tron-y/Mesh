@@ -1,9 +1,9 @@
-# Loom · 多 agent 编排器
+# Mesh · 多 agent 编排器
 
-> 织造：把 codex / dsh / claude 这些各自独立的 agent 拧成一条产线。
+> codex / dsh / claude 这些 agent 本来是各自为战的孤岛。Mesh 把它们连成一张网：
 > 你说一句话，它拆活、派活、验收、交接，并且每个 agent 在自己客户端里都留下真实会话。
 
-仓库：<https://github.com/Tron-y/Loom>
+仓库：<https://github.com/Tron-y/Mesh>
 
 调度者是一个 agent，叫 **Trony harness**（跑在 DSH 模型上，自己不写代码，只负责拆活/派活/验收/交接）。
 
@@ -40,14 +40,14 @@ spawn(cmd, args, { cwd: 项目目录 })   // cwd = 在哪个项目干活，args 
 - **"新建对话"** = 每次 `exec` 都是全新会话（不是 resume）
 - **"发送内容"** = prompt 作为命令行参数
 
-之后文件改动、会话日志、退出码都由各 CLI 自己落盘；Loom 只看文件改动 + 验收命令的退出码。
+之后文件改动、会话日志、退出码都由各 CLI 自己落盘；Mesh 只看文件改动 + 验收命令的退出码。
 
 ## 换一台电脑怎么用（安装路径不一样的问题）
 
 每台机器上 codex / dsh / claude 装在哪都不一样，所以**没有任何路径写死在代码里**。解析顺序：
 
-1. **`loom.config.json`**（自己填的，最优先）
-2. **环境变量**：`LOOM_DSH_BIN` / `LOOM_CODEX_BIN` / `LOOM_CLAUDE_BIN` / `LOOM_DSH_HOME`（也兼容 `CODEX_BIN`、`DSH_BIN`）
+1. **`mesh.config.json`**（自己填的，最优先）
+2. **环境变量**：`MESH_DSH_BIN` / `MESH_CODEX_BIN` / `MESH_CLAUDE_BIN` / `MESH_DSH_HOME`（也兼容 `CODEX_BIN`、`DSH_BIN`）
 3. **自动探测**：
    - dsh → 找 `%LOCALAPPDATA%\Programs\deepseek harness`、`C:\Program Files\deepseek harness` 等几个常见位置，看里面有没有 `DeepSeek Harness.exe` / `resources\runtime\cli\bin\dsh.cmd`
    - codex → 扫 `%LOCALAPPDATA%\OpenAI\Codex\bin\*\codex.exe`（桌面端就装在这，多个版本取最新）
@@ -61,7 +61,7 @@ node yang-harness/yang.mjs doctor
 
 # 2. 有没认到的，生成一份模板，把路径填进去
 node yang-harness/yang.mjs init-config
-#    或者手写：cp loom.config.example.json loom.config.json
+#    或者手写：cp mesh.config.example.json mesh.config.json
 
 # 3. 再自检一次，全绿就开工
 node yang-harness/yang.mjs doctor
@@ -78,7 +78,7 @@ cursor    ❌ 没找到    missing           —
   · cursor：装 cursor-agent，或写 "cursor": "<路径>"
 ```
 
-`loom.config.json` 里就是一张路径表：
+`mesh.config.json` 里就是一张路径表：
 
 **界面上也能看**：控制台右上角有个「环境」按钮，缺几个 agent 就显示红色数字（如 `环境 2`）。
 点开就是上面这张表 + 每个缺失项的修法；`?doctor=1` 可以直接打开（截图/远程排查用），Esc 关闭。
@@ -91,7 +91,7 @@ cursor    ❌ 没找到    missing           —
 ```
 
 留空 = 用自动探测。这个文件已加进 `.gitignore`，不会把你的本机路径提交出去；
-分发时给别人 `loom.config.example.json` 当模板。
+分发时给别人 `mesh.config.example.json` 当模板。
 
 ## 目录
 

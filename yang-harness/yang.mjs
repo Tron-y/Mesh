@@ -33,12 +33,12 @@ const ORCHESTRA = process.env.ORCHESTRA_URL || 'http://127.0.0.1:7788/api/ingest
 
 /* ══ 机器相关的配置：换一台电脑只改这一个文件 ══════════════════
  * 别人的机器上，codex / dsh / claude 装在哪各不相同，所以全部走"三级解析"：
- *   ① loom.config.json 里写死的路径（最优先，用户自己填）
- *   ② 环境变量（LOOM_DSH_BIN、CODEX_BIN、CLAUDE_BIN …）
+ *   ① mesh.config.json 里写死的路径（最优先，用户自己填）
+ *   ② 环境变量（MESH_DSH_BIN、CODEX_BIN、CLAUDE_BIN …）
  *   ③ 自动探测（PATH + 各客户端默认安装位置）
  * 一个都没命中时，doctor 会告诉你它找了哪些位置、该怎么填。
  */
-const CONFIG_FILE = process.env.LOOM_CONFIG || path.join(ROOT, 'loom.config.json')
+const CONFIG_FILE = process.env.MESH_CONFIG || path.join(ROOT, 'mesh.config.json')
 
 function loadConfig() {
   const empty = { bins: {}, dsh: {}, defaults: {} }
@@ -87,12 +87,12 @@ function globBins(dirs, rel) {
 const BIN_SPECS = {
   dsh: {
     label: 'DeepSeek Harness',
-    env: ['LOOM_DSH_BIN', 'DSH_BIN'],
+    env: ['MESH_DSH_BIN', 'DSH_BIN'],
     // dsh 的入口特殊：要么是包里的 dsh.cmd，要么是 "DeepSeek Harness.exe" + cli.js（见 dshLauncher）
     detect: () => {
       const roots = [
         CONFIG.dsh?.root,
-        process.env.LOOM_DSH_HOME,
+        process.env.MESH_DSH_HOME,
         process.env.DSH_HOME,
         process.env.LOCALAPPDATA && path.join(process.env.LOCALAPPDATA, 'Programs', 'deepseek harness'),
         process.env.LOCALAPPDATA && path.join(process.env.LOCALAPPDATA, 'Programs', 'DeepSeek Harness'),
@@ -108,11 +108,11 @@ const BIN_SPECS = {
       if (onPath('dsh')) return 'dsh'
       return ''
     },
-    hint: '装好 DeepSeek Harness 桌面端，或在 loom.config.json 里写 "dsh": { "root": "你的安装目录" }',
+    hint: '装好 DeepSeek Harness 桌面端，或在 mesh.config.json 里写 "dsh": { "root": "你的安装目录" }',
   },
   codex: {
     label: 'Codex',
-    env: ['LOOM_CODEX_BIN', 'CODEX_BIN'],
+    env: ['MESH_CODEX_BIN', 'CODEX_BIN'],
     detect: () => {
       // 桌面端：%LOCALAPPDATA%\OpenAI\Codex\bin\<hash>\codex.exe
       const base = process.env.LOCALAPPDATA && path.join(process.env.LOCALAPPDATA, 'OpenAI', 'Codex', 'bin')
@@ -123,10 +123,10 @@ const BIN_SPECS = {
     },
     hint: '装 Codex 客户端，或写 "codex": "<codex.exe 绝对路径>"',
   },
-  claude: { label: 'Claude Code', env: ['LOOM_CLAUDE_BIN', 'CLAUDE_BIN'], detect: () => (onPath('claude') ? 'claude' : ''), hint: 'npm i -g @anthropic-ai/claude-code，或写 "claude": "<路径>"' },
-  cursor: { label: 'Cursor Agent', env: ['LOOM_CURSOR_BIN'], detect: () => (onPath('cursor-agent') ? 'cursor-agent' : ''), hint: '装 cursor-agent，或写 "cursor": "<路径>"' },
-  opencode: { label: 'OpenCode', env: ['LOOM_OPENCODE_BIN'], detect: () => (onPath('opencode') ? 'opencode' : ''), hint: '装 opencode，或写 "opencode": "<路径>"' },
-  gemini: { label: 'Gemini CLI', env: ['LOOM_GEMINI_BIN'], detect: () => (onPath('gemini') ? 'gemini' : ''), hint: '装 gemini CLI，或写 "gemini": "<路径>"' },
+  claude: { label: 'Claude Code', env: ['MESH_CLAUDE_BIN', 'CLAUDE_BIN'], detect: () => (onPath('claude') ? 'claude' : ''), hint: 'npm i -g @anthropic-ai/claude-code，或写 "claude": "<路径>"' },
+  cursor: { label: 'Cursor Agent', env: ['MESH_CURSOR_BIN'], detect: () => (onPath('cursor-agent') ? 'cursor-agent' : ''), hint: '装 cursor-agent，或写 "cursor": "<路径>"' },
+  opencode: { label: 'OpenCode', env: ['MESH_OPENCODE_BIN'], detect: () => (onPath('opencode') ? 'opencode' : ''), hint: '装 opencode，或写 "opencode": "<路径>"' },
+  gemini: { label: 'Gemini CLI', env: ['MESH_GEMINI_BIN'], detect: () => (onPath('gemini') ? 'gemini' : ''), hint: '装 gemini CLI，或写 "gemini": "<路径>"' },
 }
 
 /** 解析某个 agent 家族的可执行文件，返回 { bin, from } 或 { bin: '', from: 'missing', hint } */
@@ -257,7 +257,7 @@ function git(cwd, args) {
   return { code: r.status, out: `${r.stdout || ''}${r.stderr || ''}`.trim() }
 }
 /** Codex 客户端的 CLI 藏在 %LOCALAPPDATA%\OpenAI\Codex\bin\<hash>\codex.exe 里，不在 PATH 上。
- *  换机器时由 loom.config.json / CODEX_BIN / 自动探测决定（见 resolveAgentBin）。 */
+ *  换机器时由 mesh.config.json / CODEX_BIN / 自动探测决定（见 resolveAgentBin）。 */
 function codexBin() {
   const r = resolveAgentBin('codex')
   return r.bin || 'codex'
@@ -346,11 +346,11 @@ function dshRoute(modelOverride) {
 }
 
 /** DSH 的可执行入口：dsh.cmd 里其实是 Electron-as-node 跑 cli.js；headless 用 --patch 挂客户端的同款路由。
- *  安装位置因机器而异：loom.config.json 的 dsh.root / LOOM_DSH_HOME / 自动探测，见 BIN_SPECS.dsh。 */
+ *  安装位置因机器而异：mesh.config.json 的 dsh.root / MESH_DSH_HOME / 自动探测，见 BIN_SPECS.dsh。 */
 function dshHome() {
   const cands = [
     CONFIG.dsh?.root,
-    process.env.LOOM_DSH_HOME,
+    process.env.MESH_DSH_HOME,
     process.env.DSH_HOME,
     process.env.LOCALAPPDATA && path.join(process.env.LOCALAPPDATA, 'Programs', 'deepseek harness'),
     process.env.LOCALAPPDATA && path.join(process.env.LOCALAPPDATA, 'Programs', 'DeepSeek Harness'),
@@ -1741,7 +1741,7 @@ switch (cmd) {
       bad: rows.filter((x) => !x.usable).map((x) => x.kind),
     }
     if (asJson) { console.log(JSON.stringify(report, null, 2)); break }
-    console.log(`Loom 环境自检\n配置文件：${cfgState}`)
+    console.log(`Mesh 环境自检\n配置文件：${cfgState}`)
     console.log(`平台：${report.platform} · node ${report.node}${report.git ? ' · git ✓' : ' · git ✗（worktree/合并要用）'}\n`)
     const pad = (s, n) => String(s).padEnd(n)
     console.log(`${pad('agent', 10)}${pad('状态', 22)}${pad('来源', 24)}解析到`)
@@ -1773,7 +1773,7 @@ switch (cmd) {
     // 只钉"自动探测不稳"的东西。codex 的目录名带版本 hash，钉死反而容易被升级弄坏，所以留空走自动探测
     for (const kind of Object.keys(BIN_SPECS)) bins[kind] = ''
     const tpl = {
-      _说明: '换机器只改这个文件。bins 留空 = 自动探测（推荐）；只有自动探测认不到时才填绝对路径。也可用环境变量 LOOM_DSH_BIN / LOOM_CODEX_BIN / LOOM_CLAUDE_BIN 覆盖。',
+      _说明: '换机器只改这个文件。bins 留空 = 自动探测（推荐）；只有自动探测认不到时才填绝对路径。也可用环境变量 MESH_DSH_BIN / MESH_CODEX_BIN / MESH_CLAUDE_BIN 覆盖。',
       bins,
       dsh: { root: dshHome() || '', model: '' },
       defaults: { planner: 'deepseek-flash', parallel: 3, worktree: false },

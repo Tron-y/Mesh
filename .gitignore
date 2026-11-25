@@ -1,5 +1,5 @@
 # 每台机器自己的 agent 安装路径，不要提交
-loom.config.json
+mesh.config.json
 
 # 跑出来的东西
 runs/
